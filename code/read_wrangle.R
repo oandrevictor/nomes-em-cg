@@ -33,7 +33,7 @@ PROFISSOES = frame_data(
     "Desembargador", "judiciário"
 )
 
-read_projectdata <- function(){
+read_wrangle_data <- function(){
     require(tidyverse)
     require(here)
     require(stringr)
@@ -41,6 +41,15 @@ read_projectdata <- function(){
     read_csv(here("data/vias-tidy.csv"), 
                     col_types = cols(
                         nomelograd = col_character(),
+                        logradouro = col_character(),
+                        arvores_100m_median = col_double(),
+                        bancos_100m_median = col_double(),
+                        semaforos_100m_median = col_double(),
+                        onibus_100m_median = col_double(),
+                        arvores_100m_mean = col_double(),
+                        bancos_100m_mean = col_double(),
+                        semaforos_100m_mean = col_double(),
+                        onibus_100m_mean = col_double(),
                         .default = col_integer()
                     )) %>% 
         filter(
@@ -48,20 +57,20 @@ read_projectdata <- function(){
             !nomelograd %in% c("ACESSO")
         ) %>% 
         mutate(
-            nomelograd = str_to_title(nomelograd),
+            nomelograd = str_to_title(nomelograd) %>% str_replace_all('\n', ' '),
             profissao = word(nomelograd, 2), # infere do nome da rua
-            sobrenome = word(nomelograd, -1)
         ) %>% 
         left_join(PROFISSOES, by = "profissao") %>% 
         mutate(
             primeiro_nome = case_when(
-                profissao %in% c("Das", "Da", "Do", "Dos", "Identificado") ~ NA_character_, # "Rua Das...
+                profissao %in% c("Das", "Da", "Do", "Dos", "Identificado", "Projetada", "Proj", "Sem") ~ NA_character_, 
                 profissao %in% c("Barão", "Oeste") ~ word(nomelograd, 4), 
                 is.na(tipo_profissao) ~ profissao, # não achou a profissão, deve ser nome
                 TRUE ~ word(nomelograd, 3) 
             )
         ) %>%  
         mutate(
+            sobrenome = if_else(is.na(primeiro_nome), NA_character_, word(nomelograd, -1)),
             profissao = if_else(is.na(tipo_profissao) | word(nomelograd, 1, 2) == "Não Identificado", NA_character_, profissao), 
             profissao = case_when(
                 profissao %in% c("Professor", "Professora") ~ "Professor(a)", 
