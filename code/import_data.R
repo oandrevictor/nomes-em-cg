@@ -1,9 +1,10 @@
 require(tidyverse)
 require(here)
 
-comprimentos = read_csv(here("data/vias_cg_qgis.csv")) %>% select(logradouro, tamanho)
+comprimentos = read_csv(here("data/vias_cg_qgis.csv")) %>% select(logradouro, tamanho, objectid)
 vias_raw = read_csv(here("data/vias_cg.csv")) %>% 
-    left_join(comprimentos) 
+    left_join(comprimentos) %>% 
+    select(-objectid)
     
 
 vias = vias_raw %>%

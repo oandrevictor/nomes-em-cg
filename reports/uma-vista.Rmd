@@ -169,3 +169,24 @@ vias %>%
 
 ```
 
+```{r}
+vias %>% 
+    filter(!is.na(sobrenome),
+           !(sobrenome %in% c("Bodocongo", "Proj", "Projetada"))) %>% 
+    group_by(sobrenome) %>% 
+    summarise(km_homenagem = sum(comprimento)/1000) %>% 
+    arrange(-km_homenagem) %>% 
+    slice(1:15) %>% 
+    ggplot(aes(x = reorder(sobrenome, km_homenagem), 
+               y = km_homenagem)) + 
+    geom_col(fill = paleta[4], width = .7) + 
+    coord_flip() + 
+    labs(
+        title = "Sobrenomes mais homenageados", 
+        subtitle = "Apenas sobrenomes em ao menos 15 vias", 
+        x = "", 
+        y = "KM de vias com o sobrenome"
+    )
+
+```
+
