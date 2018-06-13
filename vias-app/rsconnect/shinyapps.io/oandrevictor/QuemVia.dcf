@@ -1,0 +1,12 @@
+name: QuemVia
+title: QuemVia
+username:
+account: oandrevictor
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 360064
+bundleId: 1426408
+url: https://oandrevictor.shinyapps.io/QuemVia/
+when: 1528854658.37227
+asMultiple: FALSE
+asStatic: FALSE
